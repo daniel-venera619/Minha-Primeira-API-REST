@@ -21,8 +21,8 @@ const criarCliente = (req, res) =>{
     const novoCliente = {
         id: clientes.length + 1,
         nome: req.body.nome,
-        email: req.body.marca,
-        telefone: req.body.preco,
+        email: req.body.email,
+        telefone: req.body.telefone,
     }
 
     clientes.push(novoCliente);
@@ -41,8 +41,8 @@ const editarCliente = (req, res) =>{
         });
     }
     cliente.nome = req.body.nome; 
-    cliente.email = req.body.marca; 
-    cliente.telefone = req.body.preco; 
+    cliente.email = req.body.email; 
+    cliente.telefone = req.body.telefone; 
 
     res.json(cliente);
 
