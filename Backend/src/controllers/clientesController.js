@@ -1,71 +1,67 @@
-const clientes = require("../models/clientesModel");
+const clientesModel = require("../models/clientesModel");
 
-const buscarClientes = (req, res) =>{
-    res.json(clientes)
-}
+const buscarClientes = async (req, res) =>{
+    const clientes = await clientesModel.buscarTodos();
 
-const buscarClientePorId = (req, res) =>{
+    res.json(clientes);
+};
+
+const buscarClientePorId = async (req, res) =>{
     const id = req.params.id;
-    const cliente = clientes.find(cliente => cliente.id == id);
+    const cliente = await clientesModel.buscarPorID(id);
 
         if(!cliente){
             return res.status(404).json({
                 mensagem: "Cliente não encontrado"
             })
         }
-        res.json(cliente)
+        res.json(cliente);
 
-}
+};
 
-const criarCliente = (req, res) =>{
-    const novoCliente = {
-        id: clientes.length + 1,
-        nome: req.body.nome,
-        email: req.body.email,
-        telefone: req.body.telefone,
-    }
+const criarCliente = async (req, res) =>{
+    const {nome, email, telefone} = req.body
+    const criarCliente = await clientesModel.criar(nome, email, telefone);
+          
+    res.status(201).json(criarCliente);
 
-    clientes.push(novoCliente);
-    res.status(201).json(novoCliente);
+};
 
-
-}
-
-const editarCliente = (req, res) =>{
+const editarCliente = async (req, res) =>{
     const id = req.params.id;
-    const cliente = clientes.find(cliente => cliente.id == id);
+    const {nome, email, telefone} = req.body;
+    const cliente = await clientesModel.buscarPorID(id);
 
     if (!cliente){
         return res.status(404).json({
-            mensagem: "Cliente não encontrado"
+            mensagem: "cliente não encontrado"
         });
     }
-    cliente.nome = req.body.nome; 
-    cliente.email = req.body.email; 
-    cliente.telefone = req.body.telefone; 
+    
+    const produtoAtualizado = await clientesModel.editar(id, nome, email, telefone);
+    res.json(produtoAtualizado);
 
-    res.json(cliente);
+};
 
-}
+const excluirCliente = async (req, res) =>{
+  const id = req.params.id;
+  const cliente = await clientesModel.buscarPorID(id);
 
-const excluirCliente = (req, res) =>{
- const id = req.params.id;
-    const indici = clientes.findIndex(cliente => cliente.id == id);
-
-    if (indici === -1){
+    if (!cliente){
         return res.status(404).json({
-            mensagem: "Cliente não encontrado"
+            mensagem: "Produto não encontrado"
         });
     }
 
-    const removerCliente = clientes.splice(indici, 1);
+    await clientesModel.excluir(id);
 
     res.json({
         mensagem: "Cliente Removido com sucefu"
         
     });
 
-}
+};
+
 
 module.exports = {
     buscarClientes,

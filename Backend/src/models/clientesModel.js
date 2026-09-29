@@ -10,7 +10,7 @@ const buscarTodos = async () => {
 
 const buscarPorID = async (id) => {
     const [clientes] = await db.query(
-        "SELECT * FROM clientes WHERE id = ?"
+        "SELECT * FROM clientes WHERE id = ?",
         [id]
     );
 
@@ -19,12 +19,12 @@ const buscarPorID = async (id) => {
 
 const criar = async (nome, email, telefone) => {
     const cliente = await db.query(
-        "INSERT INTO produtos (nome, email, telefone VALUES (?,?,?)"
+        "INSERT INTO clientes (nome, email, telefone) VALUES (?,?,?)",
         [nome, email, telefone]
     );
 
     return{
-        id: cliente.insertID,
+        id: cliente.insertid,
         nome,
         email,
         telefone
@@ -33,8 +33,8 @@ const criar = async (nome, email, telefone) => {
 
 const editar = async (id, nome, email, telefone) =>{
     await db.query(
-        "UPDATE produtos SET  nome=?, email=?, telefone=? WHERE id=?",
-        [nome, marca, preco, id]
+        "UPDATE clientes SET  nome=?, email=?, telefone=? WHERE id=?",
+        [nome, email, telefone, id]
     );
 
     return{
